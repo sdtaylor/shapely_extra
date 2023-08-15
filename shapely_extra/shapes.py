@@ -46,6 +46,61 @@ def hexagon(center=(0,0), sidelength=1, area=None):
         
     return Polygon(hex_points)
 
+# def triangle(center = (0,0), angles = (60,60,60), area=1, lengths=None):
+#     """
+    
+#     If lengths is specified then angles is ignored.
+
+#     Parameters
+#     ----------
+#     center : TYPE, optional
+#         DESCRIPTION. The default is (0,0).
+#     angles : TYPE, optional
+#         DESCRIPTION. The default is (60,60,60).
+#     lengths : TYPE, optional
+#         DESCRIPTION. The default is None.
+#     area : TYPE, optional
+#         DESCRIPTION. The default is None.
+
+#     Returns
+#     -------
+#     None.
+
+#     """
+    
+#     pass
+
+def square(center = (0,0), sidelength=1, area=None):
+    """
+    Create a square with a specified side length or area.
+    
+    If area is specified then sidelength is ignored. 
+
+    Parameters
+    ----------
+    center : tuple, optional
+        (x,y) coordinates of the center of the hexagon. The default is (0,0).
+    sidelength : numeric, optional
+        The length of 1 side of the square. Ignored if area is specified.
+    area : numeric, optional
+        Desired area of the square. The default is None.
+
+    Returns
+    -------
+    Polygon.
+
+    """
+    if area is not None:
+        sidelength = sqrt(area)
+    
+    half_length = sidelength/2
+    ll = Point(center[0] - half_length, center[1] - half_length)
+    lr = Point(center[0] + half_length, center[1] - half_length)
+    ur = Point(center[0] + half_length, center[1] + half_length)
+    ul = Point(center[0] - half_length, center[1] + half_length)
+    
+    return Polygon([ll, lr, ur, ul])
+
 def circle(center=(0,0), radius=1, circumference=None, area=None, tolerance=0.1):
     """
     Create a circle centered on origin(x,y), with either radius 
@@ -62,8 +117,8 @@ def circle(center=(0,0), radius=1, circumference=None, area=None, tolerance=0.1)
         Point(0,0).buffer(1, quad_segs=300).area = 3.1415782
 
     Here the circle will be densified by increasing the quad_segs argument
-    until the area is equal to the true r*pi**2 area, up until the decimal
-    number specified by tolerance.    
+    until the area is equal to the true area of  r*pi**2, up until the 
+    specified tolerance.    
 
     Argument priority is as follows:
         1. area. If area is specified then radius and circumference are ignored.
@@ -74,16 +129,17 @@ def circle(center=(0,0), radius=1, circumference=None, area=None, tolerance=0.1)
     ----------
     center : tuple, optional
         (x,y) coordinates of the center of the hexagon. The default is (0,0).
-    radius : numeric
+    radius : numeric, optional
         The desired radius of the circle. Ignored if area is specified.
-    circumference : numeric
+    circumference : numeric, optional
         The desirec circumference of the circule.
-    area : numeric
+    area : numeric, optional
         The desired area of the circle. 
-    tolerance : numeric
+    tolerance : numeric, optional
         How close to the true circle area. This is the absolute tolerance. So
         for example with tolerance=10, the  derived area of the returned circle
-        will be ± 10 units to the true area. 
+        will be ± 10 units to the true area.  
+        The default is 0.1 units.
 
     Returns
     -------
