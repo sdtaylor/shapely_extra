@@ -10,7 +10,7 @@ from shapely.geometry import Point, LineString
 # Setting some precision ensures that, for example, sin(pi) = 0
 DECIMAL_PRECISION = 8
 
-def radiansToDegrees(radians):
+def radians_to_degrees(radians):
     """
     Converts from radians to degrees.
 
@@ -27,7 +27,7 @@ def radiansToDegrees(radians):
     """
     return degrees(radians)
 
-def degreesToRadians(angleDegrees):
+def degrees_to_radians(angleDegrees):
     """
     Converts from degrees to radians.
 
@@ -44,7 +44,7 @@ def degreesToRadians(angleDegrees):
     """
     return radians(angleDegrees)
 
-def angleBetweenPoints(p0, p1):
+def angle_between_points(p0, p1):
     """
     The angle of the vector from Points p0 to p1, relative to the positive x-axis.
 
@@ -72,7 +72,7 @@ def angleBetweenPoints(p0, p1):
 
     return atan2(dy,dx)
 
-def angleDiff(angle1, angle2):
+def angle_diff(angle1, angle2):
     """
     The unoriented smallest difference between two angles.
 
@@ -99,7 +99,7 @@ def angleDiff(angle1, angle2):
     
     return round(angle_diff, DECIMAL_PRECISION)
 
-def angleBetweenVectors(start_point, middle_point, end_point):
+def angle_between_vectors(start_point, middle_point, end_point):
     """
     Calculate the smallest angle of two joined vectors.
     
@@ -121,12 +121,12 @@ def angleBetweenVectors(start_point, middle_point, end_point):
         Angle in radians in the range (0,Pi)
 
     """
-    angle1 = angleBetweenPoints(middle_point, start_point)
-    angle2 = angleBetweenPoints(middle_point, end_point)
+    angle1 = angle_between_points(middle_point, start_point)
+    angle2 = angle_between_points(middle_point, end_point)
     
-    return angleDiff(angle1, angle2)
+    return angle_diff(angle1, angle2)
 
-def pointFromAngleAndDistance(ref_point, angle, distance, use_radians=False):
+def point_from_angle_and_distance(ref_point, angle, distance, use_radians=False):
     """
     Generate a new point with the specified angle and distance from ref_point.
     
@@ -159,7 +159,7 @@ def pointFromAngleAndDistance(ref_point, angle, distance, use_radians=False):
         raise TypeError('ref_point must be shapely.geometry.Point or (x,y) tuple')
 
     if not use_radians:
-        angle = degreesToRadians(angle)
+        angle = degrees_to_radians(angle)
         
     x_off = cos(angle) * distance
     y_off = sin(angle) * distance
@@ -170,7 +170,7 @@ def pointFromAngleAndDistance(ref_point, angle, distance, use_radians=False):
     return Point((x1 + x_off, y1 + y_off))
     
     
-def perpendicularLineAtEndpoint(ref_line, length, location='end', attached = 'center'):
+def perpendicular_line_at_endpoint(ref_line, length, location='end', attached = 'center'):
     """
     Generate a new line segment which is perpendicular to a reference line.
 
@@ -231,15 +231,15 @@ def perpendicularLineAtEndpoint(ref_line, length, location='end', attached = 'ce
     else:
         raise ValueError('attached must be left,right, or center')
     
-    ref_line_angle = angleBetweenPoints(coord1, coord2) # in radians
+    ref_line_angle = angle_between_points(coord1, coord2) # in radians
     
-    first_point = pointFromAngleAndDistance(
+    first_point = point_from_angle_and_distance(
         ref_point = coord2,
         angle = ref_line_angle + (pi/2),
         distance = first_point_distance,
         use_radians=True
         )
-    second_point = pointFromAngleAndDistance(
+    second_point = point_from_angle_and_distance(
         ref_point = coord2,
         angle = ref_line_angle - (pi/2),
         distance = second_point_distance,
@@ -249,7 +249,7 @@ def perpendicularLineAtEndpoint(ref_line, length, location='end', attached = 'ce
     return LineString([first_point, second_point])
     
 
-def perpendicularLineAtMidpoint(ref_line, length, location='end', attached = 'center'):
+def perpendicular_line_at_midpoint(ref_line, length, location='end', attached = 'center'):
     """
     Generate a new line segment which is perpendicular to a reference line with 3 points.
 
@@ -319,17 +319,17 @@ def perpendicularLineAtMidpoint(ref_line, length, location='end', attached = 'ce
     else:
         raise ValueError('attached must be left,right, or center')
     
-    ref_line_angle1 = angleBetweenPoints(coord1, coord2) # in radians
-    ref_line_angle2 = angleBetweenPoints(coord2, coord3)
+    ref_line_angle1 = angle_between_points(coord1, coord2) # in radians
+    ref_line_angle2 = angle_between_points(coord2, coord3)
     ref_line_angle_avg = (ref_line_angle1 + ref_line_angle2) /2
     
-    first_point = pointFromAngleAndDistance(
+    first_point = point_from_angle_and_distance(
         ref_point = coord2,
         angle = ref_line_angle_avg + (pi/2),
         distance = first_point_distance,
         use_radians=True
         )
-    second_point = pointFromAngleAndDistance(
+    second_point = point_from_angle_and_distance(
         ref_point = coord2,
         angle = ref_line_angle_avg - (pi/2),
         distance = second_point_distance,

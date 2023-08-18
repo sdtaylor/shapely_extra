@@ -1,5 +1,4 @@
 import numpy as np
-from shapely_extra.angles import pointFromAngleAndDistance
 from shapely.geometry import Point, Polygon
 
 from math import (
