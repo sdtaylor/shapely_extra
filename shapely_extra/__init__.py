@@ -1,1 +1,6 @@
-from . import angles, shapes
+from . import (
+    angles, 
+    shapes, 
+    grid,
+    
+    )
