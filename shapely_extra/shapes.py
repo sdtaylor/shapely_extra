@@ -100,7 +100,7 @@ def square(center = (0,0), sidelength=1, area=None):
     
     return Polygon([ll, lr, ur, ul])
 
-def circle(center=(0,0), radius=1, circumference=None, area=None, tolerance=0.1):
+def circle(center=(0,0), radius=1, circumference=None, area=None, rel_tolerance = 0.01, abs_tolerance=None):
     """
     Create a circle centered on origin(x,y), with either radius 
     or area specified. 
@@ -134,11 +134,16 @@ def circle(center=(0,0), radius=1, circumference=None, area=None, tolerance=0.1)
         The desirec circumference of the circule.
     area : numeric, optional
         The desired area of the circle. 
-    tolerance : numeric, optional
+    rel_tolerance : numeric, optional
+        How close to the true circle area. This is the relative tolerance. For
+        example with rel_tolerance=0.01 (the default) the derived area of the 
+        returned circle will be ± 1% of the true area.
+        Ignored if abs_tolerance is specified
+    abs_tolerance : numeric, optional
         How close to the true circle area. This is the absolute tolerance. So
-        for example with tolerance=10, the  derived area of the returned circle
+        for example with abs_tolerance=10, the  derived area of the returned circle
         will be ± 10 units to the true area.  
-        The default is 0.1 units.
+        The default is None.
 
     Returns
     -------
@@ -166,25 +171,35 @@ def circle(center=(0,0), radius=1, circumference=None, area=None, tolerance=0.1)
     else:
         raise ValueError('either radius, circumference, or area must be specified')
     
-    if tolerance<=0:
-        msg = (
-            'tolerance should be > 0. If you want a small tolerance try a small number',
-            'like 1e-6'
-            )
-        raise ValueError(msg)
-    
     true_area = pi * r**2
     
+    if abs_tolerance is not None:
+        if abs_tolerance<=0:
+            msg = (
+            'abs_tolerance should be > 0. If you want a small tolerance try a small number',
+            'like 1e-6'
+            )
+            raise ValueError(msg)
+        tol = abs_tolerance
+    else:
+        if rel_tolerance<=0:
+            raise ValueError('rel_tolerance should be > 0.')
+        tol = rel_tolerance * true_area
+    
     #TODO: a better gradient function could speed this up.
-    segment_step_size = 10
-    for i in range(1000):
-        segements_to_try = segment_step_size * i
-        derived_area = Point(center).buffer(distance=r, quad_segs=segements_to_try).area
-        if isclose(derived_area, true_area, abs_tol=tolerance):
+    # potential approximate solution: https://math.stackexchange.com/questions/4132060/compute-number-of-regular-polgy-sides-to-approximate-circle-to-defined-precision
+    for n_segs_per_qtr_circle in range(1,10000):
+        n_segs_per_circle = n_segs_per_qtr_circle * 4
+        # A circle polygon is a ring of evenly distributed points, where the
+        # line between each point makes a segment. A shapely
+        # buffer distributes the points evenly between the 4 quarters. 
+        # Each segment is a triangle with 2 adjacent sides equal to the radius.
+        # Find the triangle area to find the area made by the circle polygon
+        interior_angle = 360/n_segs_per_circle
+        triangle_area = sin(radians(interior_angle)) * (r**2) * 0.5
+        derived_area = triangle_area * n_segs_per_circle
+
+        if abs(true_area - derived_area) <= tol:
             break
     
-    return Point(center).buffer(distance=r, quad_segs=segements_to_try)
-    
-    
-
-    
+    return Point(center).buffer(distance=r, quad_segs=n_segs_per_qtr_circle)

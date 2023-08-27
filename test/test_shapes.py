@@ -31,13 +31,13 @@ def test_hexagon_centroid2():
 def test_circle_area1():
     radius = 1000
     true_area = pi * radius**2
-    derived_area = shapes.circle(radius=radius, tolerance=0.1).area
+    derived_area = shapes.circle(radius=radius, abs_tolerance=0.1).area
     assert derived_area == pytest.approx(true_area, abs=0.1)
 
 def test_circle_area2():
     radius = 0.01
     true_area = pi * radius**2
-    derived_area = shapes.circle(radius=radius, tolerance=1e-8).area
+    derived_area = shapes.circle(radius=radius, abs_tolerance=1e-8).area
     assert derived_area == pytest.approx(true_area, abs=1e8)
 
 def test_circle_centroid1():
