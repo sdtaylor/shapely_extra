@@ -1,5 +1,5 @@
-from shapely_extra import measure, shapes
-from shapely.ops import unary_union
+from shapely_extra import measure, shapes, angles
+from shapely.ops import unary_union, split
 
 import pytest
 
@@ -38,7 +38,17 @@ def test_minor_axis1(n_points):
 
 def test_minor_axis2():
     """
-    The minor axis should always intersect the major axis
+    The minor axis should always perpindicular to the major axis
     """
-    minor_axis_line2 = measure.minor_axis(test_shape, major_axis_line = None, n_sample_points = 5, seed=None)
+    major_axis_line = measure.major_axis(test_shape)
+    minor_axis_line = measure.minor_axis(test_shape, major_axis_line = major_axis_line)
     
+    line_intersection = major_axis_line.intersection(minor_axis_line)
+    
+    a = angles.angle_between_vectors(
+        start_point = major_axis_line.coords[0],
+        middle_point = (line_intersection.x, line_intersection.y),
+        end_point    = minor_axis_line.coords[0]
+        )
+    
+    assert angles.radians_to_degrees(a) == pytest.approx(90)
