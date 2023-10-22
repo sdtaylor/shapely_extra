@@ -3,14 +3,16 @@ from math import (
 
 from shapely.geometry import Point, LineString
 
+from typing import Union
+
 # Thse are a few generalized angle methods designed to
-# work with shapely Point and Linestring
+# work with shapely Point and LineString
 
 # because pi is infinate there will always be some rounding errors.
 # Setting some precision ensures that, for example, sin(pi) = 0
 DECIMAL_PRECISION = 8
 
-def radians_to_degrees(radians):
+def radians_to_degrees(radians:float) -> float:
     """
     Converts from radians to degrees.
 
@@ -27,7 +29,7 @@ def radians_to_degrees(radians):
     """
     return degrees(radians)
 
-def degrees_to_radians(angleDegrees):
+def degrees_to_radians(angleDegrees:float) -> float:
     """
     Converts from degrees to radians.
 
@@ -44,7 +46,8 @@ def degrees_to_radians(angleDegrees):
     """
     return radians(angleDegrees)
 
-def angle_between_points(p0, p1):
+def angle_between_points(p0: Union[Point, tuple[float,float]], 
+                         p1: Union[Point, tuple[float,float]]) -> float:
     """
     The angle of the vector from Points p0 to p1, relative to the positive x-axis.
 
@@ -72,7 +75,7 @@ def angle_between_points(p0, p1):
 
     return atan2(dy,dx)
 
-def angle_diff(angle1, angle2):
+def angle_diff(angle1:float, angle2:float) -> float:
     """
     The unoriented smallest difference between two angles.
 
@@ -99,7 +102,7 @@ def angle_diff(angle1, angle2):
     
     return round(angle_diff, DECIMAL_PRECISION)
 
-def angle_between_vectors(start_point, middle_point, end_point):
+def angle_between_vectors(start_point:Union[Point, tuple[float,float]], middle_point:Union[Point, tuple[float,float]], end_point:Union[Point, tuple[float,float]]) -> float:
     """
     Calculate the smallest angle of two joined vectors.
     
@@ -126,7 +129,10 @@ def angle_between_vectors(start_point, middle_point, end_point):
     
     return angle_diff(angle1, angle2)
 
-def point_from_angle_and_distance(ref_point, angle, distance, use_radians=False):
+def point_from_angle_and_distance(ref_point:Union[Point, tuple[float,float]], 
+                                  angle:float, 
+                                  distance:float, 
+                                  use_radians:bool = False) -> Point:
     """
     Generate a new point with the specified angle and distance from ref_point.
     
@@ -170,7 +176,10 @@ def point_from_angle_and_distance(ref_point, angle, distance, use_radians=False)
     return Point((x1 + x_off, y1 + y_off))
     
     
-def perpendicular_line_at_endpoint(ref_line, length, location='end', attached = 'center'):
+def perpendicular_line_at_endpoint(ref_line:LineString, 
+                                   length:float, 
+                                   location:str = 'end', 
+                                   attached:str = 'center') -> LineString:
     """
     Generate a new line segment which is perpendicular to a reference line.
 
@@ -249,7 +258,10 @@ def perpendicular_line_at_endpoint(ref_line, length, location='end', attached = 
     return LineString([first_point, second_point])
     
 
-def perpendicular_line_at_midpoint(ref_line, length, location='end', attached = 'center'):
+def perpendicular_line_at_midpoint(ref_line:LineString, 
+                                   length:float, 
+                                   location:str = 'end', 
+                                   attached:str = 'center') -> LineString:
     """
     Generate a new line segment which is perpendicular to a reference line with 3 points.
 

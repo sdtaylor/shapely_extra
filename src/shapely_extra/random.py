@@ -5,7 +5,12 @@ from shapely import line_interpolate_point
 
 from shapely_extra import shapes
 
-def sample_points_in_polygon(polygon, n, seed=None, attempt=1):
+from typing import Union
+
+def sample_points_in_polygon(polygon: Union[Polygon, MultiPolygon], 
+                             n:int, 
+                             seed: Union[float,None] = None, 
+                             attempt:int = 1) -> list[Point]:
     """
     Return n randomly located points within a Polygon.
     
@@ -48,7 +53,10 @@ def sample_points_in_polygon(polygon, n, seed=None, attempt=1):
     return point_geoms[:n]
 
 
-def sample_points_on_line(linestring, n, ordered=False, seed=None):
+def sample_points_on_line(linestring:LineString, 
+                          n:int, 
+                          ordered:bool = False, 
+                          seed: Union[float,None] = None) -> list[Point]:
     """
     Return n points randomly located along a line.
 
@@ -78,7 +86,10 @@ def sample_points_on_line(linestring, n, ordered=False, seed=None):
         point_lengths_from_origin.sort()
     return [line_interpolate_point(linestring, distance=d) for d in point_lengths_from_origin]
 
-def sample_polygons(polygon, n, method='voronoi', seed=None):
+def sample_polygons(polygon: Union[Polygon, MultiPolygon], 
+                    n:int, 
+                    method:str = 'voronoi', 
+                    seed: Union[float,None] = None) -> list[Polygon]:
     """
     Split a polygon into n random shapes. Currently only one method
     is supported. 

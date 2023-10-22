@@ -6,7 +6,11 @@ from math import (
 
 import numbers
 
-def hexagon(center=(0,0), sidelength=1, area=None):
+from typing import Union
+
+def hexagon(center: tuple[float,float] = (0,0), 
+            sidelength:float = 1, 
+            area: Union[float, None] = None) -> Polygon:
     """
     Create a hexagon centered on origin(x,y), with either sidelength 
     or area specified. 
@@ -69,7 +73,9 @@ def hexagon(center=(0,0), sidelength=1, area=None):
     
 #     pass
 
-def square(center = (0,0), sidelength=1, area=None):
+def square(center: tuple[float,float] = (0,0), 
+           sidelength:float = 1, 
+           area: Union[float,None] = None) -> Polygon:
     """
     Create a square with a specified side length or area.
     
@@ -100,7 +106,12 @@ def square(center = (0,0), sidelength=1, area=None):
     
     return Polygon([ll, lr, ur, ul])
 
-def circle(center=(0,0), radius=1, circumference=None, area=None, rel_tolerance = 0.01, abs_tolerance=None):
+def circle(center: tuple[float,float] = (0,0), 
+           radius:float = 1, 
+           circumference: Union[float,None] = None, 
+           area: Union[float,None] = None, 
+           rel_tolerance:float = 0.01, 
+           abs_tolerance: Union[float,None] = None):
     """
     Create a circle centered on origin(x,y), with either radius 
     or area specified. 

@@ -1,13 +1,16 @@
 import numpy as np
-from shapely.geometry import Point, LineString
+from shapely.geometry import Point, LineString, MultiLineString, Polygon, MultiPolygon
 
 from scipy import spatial
 
 from shapely_extra.random import sample_points_on_line
 from shapely_extra.angles import perpendicular_line_at_endpoint
 
+from typing import Union
         
-def major_axis(polygon, n_sample_points=100, seed=1):
+def major_axis(polygon: Union[Polygon, MultiPolygon], 
+               n_sample_points:int = 100, 
+               seed:float = 1) -> LineString:
     """
     Generate a LineString representing the major axis of a polygon.
     
@@ -66,7 +69,8 @@ def major_axis(polygon, n_sample_points=100, seed=1):
     
     return LineString([point1, point2])
 
-def _linestring_intersect_and_merge(l, polygon):
+def _linestring_intersect_and_merge(l: Union[LineString, MultiLineString], 
+                                    polygon: Union[Polygon, MultiPolygon]) -> LineString:
     """ 
     Intersect a line with a polygon and, if needed, stitch the
     a MultiLineString back together into a single LineString
@@ -83,7 +87,10 @@ def _linestring_intersect_and_merge(l, polygon):
         return out
     
 
-def minor_axis(polygon, major_axis_line=None, n_sample_points=100, seed=1):
+def minor_axis(polygon: Union[Polygon, MultiPolygon], 
+               major_axis_line: Union[LineString, None] = None, 
+               n_sample_points:int = 100, 
+               seed:float = 1) -> LineString:
     """
     Generate a LineString representing the minor axis of a polygon.
 

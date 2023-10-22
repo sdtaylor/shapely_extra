@@ -2,7 +2,12 @@ from shapely.geometry import Point, LineString
 
 from shapely_extra.angles import angle_between_points, point_from_angle_and_distance
 
-def extend_line(line, length=None, length_frac=None, side='both'):
+from typing import Union
+
+def extend_line(line:LineString, 
+                length: Union[float,None] = None, 
+                length_frac: Union[float,None] = None, 
+                side:str = 'both') -> LineString:
     """
     Extend a line past it's endpoints. Either by an absolute value using
     length, or a fraction of the lines current length using length_frac.

@@ -1,13 +1,16 @@
 import numpy as np
 
 from shapely_extra import shapes
-from shapely.geometry import box, Point
+from shapely.geometry import box, Point, Polygon, MultiPolygon
 from shapely.affinity import translate
 from shapely.ops import snap
 
 from math import ceil, sqrt, pi
 
-def point_grid(polygon, distance=1):
+from typing import Union
+
+def point_grid(polygon: Union[Polygon, MultiPolygon], 
+               distance:float = 1) -> list[Point]:
     """
     Create a point grid contained within a polygon.
 
@@ -38,7 +41,10 @@ def point_grid(polygon, distance=1):
     
     return [p for p in points if p.within(polygon)]
 
-def square_grid(polygon, square_sidelength=1, square_area=None, clip=False):
+def square_grid(polygon: Union[Polygon, MultiPolygon], 
+                square_sidelength:float = 1, 
+                square_area: Union[float,None] = None, 
+                clip:bool = False) -> list[Polygon]:
     """
     Generate a square grid within a polygon. 
 
@@ -127,7 +133,10 @@ def square_grid(polygon, square_sidelength=1, square_area=None, clip=False):
 _is_even = lambda x: x % 2 == 0
 _is_odd  = lambda x: x % 2 != 0
 
-def hexagon_grid(polygon, hexagon_sidelength=1, hexagon_area=None, clip=False):
+def hexagon_grid(polygon: Union[Polygon, MultiPolygon], 
+                 hexagon_sidelength:float = 1, 
+                 hexagon_area: Union[float,None] = None, 
+                 clip:bool = False) -> list[Polygon]:
     '''
     Generate a hexagon grid contained within a polygon.
     
