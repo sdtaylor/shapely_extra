@@ -1,0 +1,19 @@
+site_name: shapely-extra
+use_directory_urls: false
+theme: "material"
+repo_url: 'https://github.com/sdtaylor/shapely_extra'
+
+# Note: install required mkdocs packages with
+# pip install -r requirements-docs.txt
+
+nav:
+    - About: 'index.md'
+    - API Reference: 'api.md' 
+
+
+plugins:
+    - mkdocstrings:
+        default_handler: python
+        handlers:
+            python:
+                paths: [src]
